@@ -1,87 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agenda de Gastos — Dashboard</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/pages/styles.config.css" />
-  <link rel="stylesheet" href="../assets/css/components/header.css" />
-  <link rel="stylesheet" href="../assets/css/pages/dashboard.css" />
-</head>
-<body>
-  <header class="header">
-    <div class="container header__inner">
-      <div class="header__brand">
-        <span class="header__title">💸 Agenda de Gastos</span>
-        <span class="header__group-name" id="nombre-grupo-header">Cargando...</span>
-      </div>
-      <nav class="header__nav">
-        <a href="../index.html" class="header__nav-link">Ingresar</a>
-        <a href="dashboard.html" class="header__nav-link active">Dashboard</a>
-      </nav>
-      <button id="btn-nuevo-grupo" class="btn-nuevo-grupo">+ Nuevo Grupo</button>
-    </div>
-  </header>
-
-  <main class="container dashboard-main">
-    <div class="group-hero">
-      <h1 class="group-hero__title" id="group-title">Grupo</h1>
-      <p class="group-hero__subtitle">Resumen de gastos y deudas compartidas.</p>
-    </div>
-
-    <section class="section-gap">
-      <div class="section-header">
-        <div class="section-header__left">
-          <span class="section-header__icon">📊</span>
-          <h2 class="section-header__title">Balances</h2>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agenda de Gastos — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../assets/css/pages/styles.config.css" />
+    <link rel="stylesheet" href="../assets/css/components/header.css" />
+    <link rel="stylesheet" href="../assets/css/pages/dashboard.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="container header__inner">
+        <div class="header__brand">
+          <span class="header__title">💸 Agenda de Gastos</span>
+          <span class="header__group-name" id="nombre-grupo-header"
+            >Cargando...</span
+          >
         </div>
-        <span class="section-header__badge">Actualizado automáticamente</span>
+        <nav class="header__nav">
+          <a href="../index.html" class="header__nav-link">Ingresar</a>
+          <a href="dashboard.html" class="header__nav-link active">Dashboard</a>
+        </nav>
+        <button id="btn-nuevo-grupo" class="btn-nuevo-grupo">
+          + Nuevo Grupo
+        </button>
       </div>
-      <div class="balances-card" id="balances-container"></div>
-    </section>
+    </header>
 
-    <section class="section-gap">
-      <div class="section-header">
-        <div class="section-header__left">
-          <span class="section-header__icon">🔄</span>
-          <h2 class="section-header__title">Transferencias Sugeridas</h2>
+    <main class="container dashboard-main">
+      <section class="section-gap">
+        <div class="section-header">
+          <div class="section-header__left">
+            <span class="section-header__icon">📁</span>
+            <h2 class="section-header__title">Grupos</h2>
+          </div>
         </div>
-      </div>
-      <div class="transfers-card" id="transferencias-container"></div>
-    </section>
+        <div
+          id="grupos-container"
+          style="display: flex; flex-wrap: wrap; gap: 12px"
+        ></div>
+      </section>
 
-    <section class="section-gap">
-      <div class="section-header">
-        <div class="section-header__left">
-          <span class="section-header__icon">📋</span>
-          <h2 class="section-header__title">Gastos</h2>
+      <section class="section-gap">
+        <div class="section-header">
+          <div class="section-header__left">
+            <span class="section-header__icon">📊</span>
+            <h2 class="section-header__title">Balances</h2>
+          </div>
+          <span class="section-header__badge">Actualizado automáticamente</span>
         </div>
-        <a href="../index.html#form-gasto" class="gastos-header-action">
-          <span class="material-symbols-outlined" style="font-size:18px">add</span>
-          Agregar Gasto
-        </a>
-      </div>
-      <div id="gastos-container"></div>
-    </section>
-  </main>
+        <div class="balances-card" id="balances-container"></div>
+      </section>
 
-  <footer class="footer">
-    <div class="container footer__inner">
-      <div>
-        <div class="footer__brand">💸 Agenda de Gastos</div>
-        <div class="footer__copy">© 2024 Agenda de Gastos Compartidos</div>
+      <section class="section-gap">
+        <div class="section-header">
+          <div class="section-header__left">
+            <span class="section-header__icon">🔄</span>
+            <h2 class="section-header__title">Transferencias Sugeridas</h2>
+          </div>
+        </div>
+        <div class="transfers-card" id="transferencias-container"></div>
+      </section>
+
+      <section class="section-gap">
+        <div class="section-header">
+          <div class="section-header__left">
+            <span class="section-header__icon">📋</span>
+            <h2 class="section-header__title">Gastos</h2>
+          </div>
+          <a href="../index.html#form-gasto" class="gastos-header-action">
+            <span class="material-symbols-outlined" style="font-size: 18px"
+              >add</span
+            >
+            Agregar Gasto
+          </a>
+        </div>
+        <div id="gastos-container"></div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div>
+          <div class="footer__brand">💸 Agenda de Gastos</div>
+          <div class="footer__copy">© 2024 Agenda de Gastos Compartidos</div>
+        </div>
+        <nav class="footer__links">
+          <a href="#">Privacidad</a>
+          <a href="#">Términos</a>
+          <a href="#">Soporte</a>
+        </nav>
       </div>
-      <nav class="footer__links">
-        <a href="#">Privacidad</a>
-        <a href="#">Términos</a>
-        <a href="#">Soporte</a>
-      </nav>
-    </div>
-  </footer>
-  <script type="module" src="../js/ui-dashboard.js"></script>
-</body>
+    </footer>
+    <script type="module" src="../js/ui-dashboard.js"></script>
+  </body>
 </html>
