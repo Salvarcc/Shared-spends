@@ -1,73 +1,54 @@
-# 💸 Agenda de Gastos Compartidos (Shared Spends)
+# 💸 Agenda de Gastos Compartidos
 
-Una aplicación web moderna y minimalista para gestionar gastos grupales, calcular balances y determinar la forma más eficiente de saldar deudas entre amigos, familiares o compañeros de viaje.
+Una aplicación web moderna y visualmente impactante para gestionar gastos grupales, calcular balances y facilitar la división de cuentas entre amigos, viajes o eventos.
 
-## 🚀 Características
+![Estilo Cyberpunk](https://img.shields.io/badge/Design-Cyberpunk%20/%20Neon-00ffc8)
+![Tecnologías](https://img.shields.io/badge/Stack-Vanilla%20JS%20/%20Tailwind-blue)
 
-- **Gestión de Grupos**: Crea múltiples grupos para diferentes ocasiones (viajes, cenas, casa compartida).
-- **Integrantes Personalizados**: Agrega y elimina participantes en cada grupo.
-- **Registro de Gastos Detallado**:
-  - Descripción del gasto.
-  - Monto en Soles (S/).
-  - Selección de pagador.
-  - División personalizada (selecciona entre quiénes se divide el gasto).
-- **Dashboard Inteligente**:
-  - Visualización de balances individuales (quién debe y a quién le deben).
-  - Algoritmo de transferencias óptimas para saldar deudas con el menor número de movimientos.
-  - Historial de gastos con emojis automáticos basados en la descripción.
-- **Persistencia Local**: Los datos se guardan automáticamente en el navegador (`localStorage`).
+## ✨ Características Principales
 
-## 📁 Estructura del Proyecto
-
-```text
-D:\curso\code202\Shared-spends\
-├── index.html                # Página principal (Ingreso de datos)
-├── README.md                 # Documentación del proyecto
-├── assets/
-│   └── css/
-│       ├── components/
-│       │   └── header.css    # Estilos del encabezado compartido
-│       └── pages/
-│           ├── styles.config.css # Variables globales y reset
-│           ├── index.css     # Estilos de la página principal
-│           └── dashboard.css # Estilos del dashboard
-├── js/
-│   ├── state.js              # Gestión del estado global de la app
-│   ├── storage.js            # Persistencia de datos en localStorage
-│   ├── balance.js            # Lógica matemática de balances y deudas
-│   ├── ui-index.js           # Lógica de la interfaz de la página principal
-│   └── ui-dashboard.js       # Lógica de la interfaz del dashboard
-└── pages/
-    └── dashboard.html        # Página de visualización y resultados
-```
+- **Diseño Futurista**: Interfaz oscura con acentos neón, tipografía moderna (`Space Grotesk` & `Space Mono`) y efectos visuales de alta gama.
+- **Gestión de Grupos**: Crea múltiples grupos y cambia entre ellos instantáneamente.
+- **Detección Inteligente de Gastos**: Clasificación automática mediante iconos (emojis) basada en la descripción (ej. "Cena" → 🍽️, "Uber" → 🚕, "Café" → ☕).
+- **Cálculo de Balances en Tiempo Real**: Visualiza quién ha pagado más y quién debe a quién con un solo vistazo.
+- **Algoritmo de Liquidación**: Sugerencias automáticas de transferencias para saldar deudas de la forma más eficiente posible.
+- **Gráficos Interactivos**: Distribución de gastos mediante gráficos de dona dinámicos.
+- **Exportación Profesional**: Descarga tus reportes de gastos en formato **PDF** y **Excel**.
+- **Notificaciones con Estilo**: Integración completa con **SweetAlert2** para una experiencia de usuario fluida y elegante.
+- **Persistencia Local**: Tus datos se guardan automáticamente en el navegador (`LocalStorage`).
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **HTML5**: Estructura semántica.
-- **CSS3**: Diseño responsivo utilizando Variables CSS, Flexbox y CSS Grid.
-- **JavaScript (ES6+)**: Módulos nativos, manipulación del DOM y lógica de negocio.
-- **Material Symbols**: Iconografía moderna.
-- **Google Fonts**: Tipografías "DM Sans" y "DM Mono".
+- **Frontend**: HTML5, Vanilla JavaScript (ES6+).
+- **Estilos**: [Tailwind CSS](https://tailwindcss.com/) (CDN) para un diseño responsivo y moderno.
+- **Gráficos**: [Chart.js](https://www.chartjs.org/) para la visualización de datos.
+- **Alertas**: [SweetAlert2](https://sweetalert2.github.io/) para diálogos y confirmaciones.
+- **Librerías de Exportación**: 
+  - `jsPDF` y `jsPDF-AutoTable` para reportes en PDF.
+  - `SheetJS` (XLSX) para reportes en Excel.
 
-## 🧠 Lógica de Negocio
+## 🚀 Instalación y Uso
 
-### Gestión de Estado (`state.js`)
-El estado se maneja de forma centralizada en un objeto que contiene los grupos y el índice del grupo activo. Se utilizan funciones exportadas para interactuar con este estado de forma segura.
+1. **Clona el repositorio**:
+   ```bash
+   git clone https://github.com/tu-usuario/Shared-spends.git
+   ```
+2. **Abre la aplicación**:
+   Simplemente abre `index.html` en tu navegador favorito. No requiere servidor ni dependencias de backend.
 
-### Cálculos Matemáticos (`balance.js`)
-El sistema utiliza dos algoritmos principales:
-1.  **Cálculo de Balances**: Determina cuánto ha pagado cada persona versus cuánto debería haber pagado según los gastos en los que participó.
-2.  **Cálculo de Transferencias**: Un algoritmo codicioso (greedy) que empareja al deudor más grande con el acreedor más grande para minimizar el número de transacciones necesarias para saldar el grupo.
+3. **Flujo de trabajo**:
+   - Crea un **Nuevo Grupo** desde la pantalla inicial.
+   - Agrega a los **Integrantes**.
+   - Registra tus **Gastos** especificando quién pagó y entre quiénes se divide.
+   - Ve al **Dashboard** para ver las estadísticas y saldar cuentas.
 
-### Persistencia (`storage.js`)
-Implementa un wrapper sobre `localStorage` para guardar y cargar el estado de la aplicación, manejando posibles errores de datos corruptos.
+## 📸 Capturas de Pantalla
 
-## 📖 Cómo Usar
+*(Próximamente...)*
 
-1.  **Crear un Grupo**: En la página principal, ingresa el nombre de tu grupo (ej. "Viaje a Cusco").
-2.  **Agregar Integrantes**: Escribe los nombres de las personas que participan.
-3.  **Registrar Gastos**: Cada vez que alguien pague algo, registra la descripción, el monto, quién pagó y entre quiénes se divide.
-4.  **Ver Resultados**: Dirígete al Dashboard para ver quién debe dinero y cómo realizar los pagos para quedar a mano.
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT.
 
 ---
-*Desarrollado como parte del curso Code202.*
+Creado con ❤️ para facilitar tus finanzas compartidas.
