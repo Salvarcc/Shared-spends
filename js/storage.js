@@ -25,3 +25,4 @@ export function clearState() {
     console.error('Error al limpiar:', e);
   }
 }
+

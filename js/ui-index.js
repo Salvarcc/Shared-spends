@@ -1,4 +1,4 @@
-import { getNombre, getPersonas, getGastos, crearGrupo, agregarPersona, eliminarPersona, agregarGasto, loadStateObj, getGrupoActivo } from './state.js';
+import { getNombre, getPersonas, getGastos, crearGrupo, agregarPersona, eliminarPersona, agregarGasto, loadStateObj, getGrupoActivo, desactivarGrupo } from './state.js';
 import { saveState, loadState, clearState } from './storage.js';
 import { getState } from './state.js';
 
@@ -7,6 +7,20 @@ function avatarClass(idx) { return `avatar--${AVATAR_COLORS[idx % AVATAR_COLORS.
 
 function guardar() {
   saveState(getState());
+}
+
+function actualizarBloqueoSecciones() {
+  const activo = getGrupoActivo();
+  const sIntegrantes = document.getElementById('section-integrantes');
+  const sGasto = document.getElementById('section-registrar-gasto');
+
+  if (activo) {
+    sIntegrantes?.classList.remove('section-disabled');
+    sGasto?.classList.remove('section-disabled');
+  } else {
+    sIntegrantes?.classList.add('section-disabled');
+    sGasto?.classList.add('section-disabled');
+  }
 }
 
 function renderPersonas() {
@@ -34,13 +48,36 @@ function renderPersonas() {
     </div>
   `).join('');
 
-  lista.querySelectorAll('[data-nombre]').forEach(btn => {
+  lista.querySelectorAll('.integrante-item__delete').forEach(btn => {
     btn.addEventListener('click', () => {
-      eliminarPersona(btn.dataset.nombre);
-      guardar();
-      renderPersonas();
-      renderCheckboxes();
-      actualizarSelectPagador();
+      const nombre = btn.dataset.nombre;
+      Swal.fire({
+        title: `¿Eliminar a ${nombre}?`,
+        text: "Se perderán sus registros en este grupo.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff5252',
+        cancelButtonColor: '#21262d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar',
+        background: '#161b22',
+        color: '#fff'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          eliminarPersona(nombre);
+          guardar();
+          renderPersonas();
+          renderCheckboxes();
+          actualizarSelectPagador();
+          Swal.fire({
+            title: "¡Eliminado!",
+            icon: "success",
+            draggable: true,
+            background: '#161b22',
+            color: '#fff'
+          });
+        }
+      });
     });
   });
 }
@@ -51,7 +88,7 @@ function renderCheckboxes() {
   if (!cont) return;
 
   if (personas.length === 0) {
-    cont.innerHTML = '<p class="field-error visible">Agrega integrantes primero.</p>';
+    cont.innerHTML = '';
     return;
   }
 
@@ -73,7 +110,7 @@ function actualizarSelectPagador() {
 
 function actualizarNombreGrupo() {
   const span = document.getElementById('nombre-grupo-header');
-  if (span) span.textContent = getNombre() || '—';
+  if (span) span.textContent = getNombre() || 'Sin grupo activo';
 }
 
 function showError(el, msg) {
@@ -87,14 +124,14 @@ function showError(el, msg) {
 }
 
 function clearError(el) {
-  const prev = el.parentNode.querySelector('[data-error-for]');
+  if (!el) return;
+  const prev = el.parentNode?.querySelector('[data-error-for]');
   if (prev) prev.remove();
   el.classList.remove('error');
 }
 
 function handleCrearGrupo() {
   const input  = document.getElementById('input-nombre-grupo');
-  const btn    = document.getElementById('btn-crear-grupo');
   const nombre = input.value.trim();
 
   if (!nombre) { showError(input, 'Escribe un nombre para el grupo.'); return; }
@@ -106,19 +143,36 @@ function handleCrearGrupo() {
   actualizarNombreGrupo();
   input.value = '';
   clearError(input);
+  
+  actualizarBloqueoSecciones();
   renderPersonas();
   renderCheckboxes();
   actualizarSelectPagador();
 
-  btn.textContent = '✓ Creado';
-  btn.disabled = true;
-  setTimeout(() => { btn.textContent = 'Crear'; btn.disabled = false; }, 1500);
+  Swal.fire({
+    title: "¡Grupo Creado!",
+    text: `El grupo "${nombre}" está listo.`,
+    icon: "success",
+    draggable: true,
+    background: '#161b22',
+    color: '#fff'
+  });
 }
 
 function handleAgregarPersona() {
-  if (!getGrupoActivo()) { alert('Crea un grupo primero.'); return; }
+  if (!getGrupoActivo()) {
+    Swal.fire({
+      title: "¡Atención!",
+      text: "Crea un grupo primero.",
+      icon: "info",
+      background: '#161b22',
+      color: '#fff'
+    });
+    return;
+  }
   const input = document.getElementById('input-integrante');
-  const res   = agregarPersona(input.value);
+  const nombre = input.value.trim();
+  const res   = agregarPersona(nombre);
   if (!res.ok) { showError(input, res.msg); return; }
   clearError(input);
   input.value = '';
@@ -126,13 +180,22 @@ function handleAgregarPersona() {
   renderPersonas();
   renderCheckboxes();
   actualizarSelectPagador();
+
+  Swal.fire({
+    title: "¡Integrante agregado!",
+    text: `${nombre} se unió al grupo.`,
+    icon: "success",
+    draggable: true,
+    background: '#161b22',
+    color: '#fff'
+  });
 }
 
 function handleRegistrarGasto(e) {
   e.preventDefault();
-  if (!getGrupoActivo()) { alert('Crea un grupo primero.'); return; }
+  if (!getGrupoActivo()) return;
+  
   let valido = true;
-
   const desc       = document.getElementById('input-desc');
   const monto      = document.getElementById('input-monto');
   const pagador    = document.getElementById('select-pagador');
@@ -141,7 +204,10 @@ function handleRegistrarGasto(e) {
   if (!desc.value.trim())              { showError(desc,   'Escribe una descripción.'); valido = false; } else clearError(desc);
   if (!monto.value || +monto.value<=0) { showError(monto,  'El monto debe ser mayor a 0.'); valido = false; } else clearError(monto);
   if (!pagador.value)                  { showError(pagador, 'Selecciona quién pagó.'); valido = false; } else clearError(pagador);
-  if (!checkboxes.length)              { showError(document.getElementById('checkboxes-divide'), 'Selecciona al menos una persona.'); valido = false; }
+  if (!checkboxes.length)              { 
+    Swal.fire({ title: "Error", text: "Selecciona al menos una persona para dividir.", icon: "error", background: '#161b22', color: '#fff' });
+    valido = false; 
+  }
 
   if (!valido) return;
 
@@ -152,12 +218,45 @@ function handleRegistrarGasto(e) {
     divididoEntre: checkboxes.map(c => c.value)
   });
 
-  if (!res.ok) { alert(res.msg); return; }
+  if (!res.ok) {
+    Swal.fire({ title: "Error", text: res.msg, icon: "error", background: '#161b22', color: '#fff' });
+    return;
+  }
 
   guardar();
   e.target.reset();
   renderCheckboxes();
-  alert('✅ Gasto registrado. Ve al Dashboard para ver los balances.');
+  
+  Swal.fire({
+    title: "¡Gasto registrado!",
+    text: "El gasto se guardó correctamente.",
+    icon: "success",
+    draggable: true,
+    background: '#161b22',
+    color: '#fff'
+  });
+}
+
+function refreshAll() {
+  actualizarNombreGrupo();
+  actualizarBloqueoSecciones();
+  renderPersonas();
+  renderCheckboxes();
+  actualizarSelectPagador();
+}
+
+function handleNuevo() {
+  desactivarGrupo();
+  guardar();
+  document.getElementById('input-nombre-grupo').value = '';
+  refreshAll();
+  Swal.fire({
+    title: "Nuevo Grupo",
+    text: "Ingresa el nombre del grupo para comenzar.",
+    icon: "info",
+    background: '#161b22',
+    color: '#fff'
+  });
 }
 
 function init() {
@@ -168,15 +267,19 @@ function init() {
     loadStateObj(saved);
   }
 
-  actualizarNombreGrupo();
-  renderPersonas();
-  renderCheckboxes();
-  actualizarSelectPagador();
+  // Si venimos con el hash #nuevo, desactivamos el grupo actual
+  if (window.location.hash === '#nuevo') {
+    desactivarGrupo();
+    window.location.hash = '';
+  }
+
+  refreshAll();
 
   document.getElementById('btn-crear-grupo').onclick     = handleCrearGrupo;
   document.getElementById('btn-agregar-persona').onclick = handleAgregarPersona;
   document.getElementById('input-integrante').onkeydown  = e => { if (e.key === 'Enter') handleAgregarPersona(); };
   document.getElementById('form-gasto').onsubmit         = handleRegistrarGasto;
+  document.getElementById('btn-header-nuevo').onclick    = handleNuevo;
 }
 
 document.addEventListener('DOMContentLoaded', init);

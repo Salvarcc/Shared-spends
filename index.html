@@ -4,54 +4,94 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agenda de Gastos — Ingresar datos</title>
+
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="assets/css/pages/styles.config.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración de Tailwind -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Space Grotesk"', 'sans-serif'],
+              mono: ['"Space Mono"', 'monospace'],
+            },
+            colors: {
+              neon:     '#00ffc8',
+              panel:    '#0d1117',
+              card:     '#161b22',
+              border:   '#21262d',
+              positive: '#00e676',
+              negative: '#ff5252',
+              neutral:  '#90a4ae',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Estilos propios -->
     <link rel="stylesheet" href="assets/css/components/header.css" />
     <link rel="stylesheet" href="assets/css/pages/index.css" />
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+      .section-disabled {
+        opacity: 0.4;
+        pointer-events: none;
+        filter: grayscale(0.8);
+        transition: all 0.3s ease;
+      }
+    </style>
   </head>
-  <body>
-    <header class="header">
-      <div class="container header__inner">
-        <div class="header__brand">
-          <span class="header__title">💸 Agenda de Gastos</span>
-          <span class="header__group-name" id="nombre-grupo-header"
-            >Sin grupo activo</span
-          >
+  <body class="font-sans bg-panel text-white min-h-screen">
+
+    <!-- ══ HEADER ══ -->
+    <header class="bg-card border-b border-border sticky top-0 z-50 header-shadow">
+      <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+
+        <div class="flex items-center gap-3">
+          <div class="header-logo-icon">💸</div>
+          <div>
+            <div class="text-base font-bold tracking-tight leading-tight text-white">Agenda de Gastos</div>
+            <div id="nombre-grupo-header" class="text-xs font-mono font-bold uppercase tracking-widest text-neon">Sin grupo activo</div>
+          </div>
         </div>
-        <nav class="header__nav">
-          <a href="index.html" class="header__nav-link active">Ingresar</a>
-          <a href="pages/dashboard.html" class="header__nav-link">Dashboard</a>
+
+        <nav class="hidden sm:flex items-center gap-1">
+          <button id="btn-header-nuevo" class="nav-link">Nuevo</button>
+          <a href="index.html" class="nav-link nav-link--active">Ingresar</a>
+          <a href="pages/dashboard.html" class="nav-link">Dashboard</a>
         </nav>
-        <a href="pages/dashboard.html" class="btn-nuevo-grupo"
-          >Ver Dashboard →</a
-        >
+
+        <a href="pages/dashboard.html" class="btn-primary">Ver Dashboard →</a>
       </div>
     </header>
 
-    <main class="container page-main">
-      <section class="section-gap">
+    <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-12">
+      
+      <!-- 01 · Nuevo Grupo -->
+      <section id="section-nuevo-grupo" class="slide-up">
         <div class="section-header">
-          <span class="section-header__icon">📋</span>
-          <h2 class="section-header__title">Nuevo Grupo</h2>
+          <span class="section-index">01 /</span>
+          <h2 class="section-title">Nuevo Grupo</h2>
         </div>
-        <div class="card">
-          <div class="nuevo-grupo__row">
-            <div class="form-group">
-              <label class="form-label" for="input-nombre-grupo"
-                >Nombre del Grupo</label
-              >
+        <div class="section-divider"></div>
+        <div class="bracket-card p-6">
+          <div class="flex flex-col sm:flex-row gap-4 items-end">
+            <div class="flex-1 w-full">
+              <label class="block text-xs font-bold uppercase tracking-widest text-neutral mb-2" for="input-nombre-grupo">Nombre del Grupo</label>
               <input
                 id="input-nombre-grupo"
-                class="form-input"
+                class="w-full bg-panel border border-border rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:ring-1 focus:ring-neon outline-none transition-all"
                 type="text"
                 placeholder='Ej. "Viaje a Máncora"'
                 maxlength="50"
@@ -59,29 +99,28 @@
             </div>
             <button
               id="btn-crear-grupo"
-              class="btn btn--primary"
-              style="align-self: flex-end"
+              class="btn-primary w-full sm:w-auto"
             >
-              Crear
+              Crear Grupo
             </button>
           </div>
         </div>
       </section>
 
-      <section class="section-gap">
+      <!-- 02 · Integrantes -->
+      <section id="section-integrantes" class="slide-up delay-1">
         <div class="section-header">
-          <span class="section-header__icon">👥</span>
-          <h2 class="section-header__title">Integrantes</h2>
+          <span class="section-index">02 /</span>
+          <h2 class="section-title">Integrantes</h2>
         </div>
-        <div class="card">
-          <div class="integrantes__add-row">
-            <div class="form-group">
-              <label class="form-label" for="input-integrante"
-                >Nombre del integrante</label
-              >
+        <div class="section-divider"></div>
+        <div class="bracket-card p-6">
+          <div class="flex flex-col sm:flex-row gap-4 items-end mb-6">
+            <div class="flex-1 w-full">
+              <label class="block text-xs font-bold uppercase tracking-widest text-neutral mb-2" for="input-integrante">Nombre del integrante</label>
               <input
                 id="input-integrante"
-                class="form-input"
+                class="w-full bg-panel border border-border rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:ring-1 focus:ring-neon outline-none transition-all"
                 type="text"
                 placeholder="Ej. Ana"
                 maxlength="30"
@@ -89,41 +128,42 @@
             </div>
             <button
               id="btn-agregar-persona"
-              class="btn btn--ghost"
-              style="align-self: flex-end"
+              class="btn-export btn-export--add w-full sm:w-auto"
             >
               + Agregar
             </button>
           </div>
-          <div id="lista-integrantes"></div>
+          <div id="lista-integrantes" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"></div>
         </div>
       </section>
 
-      <section class="section-gap">
+      <!-- 03 · Registrar Gasto -->
+      <section id="section-registrar-gasto" class="slide-up delay-2">
         <div class="section-header">
-          <span class="section-header__icon">💸</span>
-          <h2 class="section-header__title">Registrar Gasto</h2>
+          <span class="section-index">03 /</span>
+          <h2 class="section-title">Registrar Gasto</h2>
         </div>
-        <div class="card">
-          <form id="form-gasto" class="gasto-form" novalidate>
-            <div class="gasto-form__grid">
-              <div class="form-group">
-                <label class="form-label" for="input-desc">Descripción</label>
+        <div class="section-divider"></div>
+        <div class="bracket-card p-6">
+          <form id="form-gasto" class="space-y-6" novalidate>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase tracking-widest text-neutral" for="input-desc">Descripción</label>
                 <input
                   id="input-desc"
-                  class="form-input"
+                  class="w-full bg-panel border border-border rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:ring-1 focus:ring-neon outline-none transition-all"
                   type="text"
                   placeholder='Ej. "Cena en el puerto"'
                   maxlength="60"
                 />
               </div>
-              <div class="form-group">
-                <label class="form-label" for="input-monto">Monto (S/)</label>
-                <div class="input-prefix">
-                  <span class="input-prefix__symbol">S/</span>
+              <div class="space-y-2">
+                <label class="block text-xs font-bold uppercase tracking-widest text-neutral" for="input-monto">Monto (S/)</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-neutral font-mono text-sm">S/</span>
                   <input
                     id="input-monto"
-                    class="form-input form-input--amount"
+                    class="w-full bg-panel border border-border rounded-lg pl-10 pr-4 py-2.5 text-sm font-mono focus:border-neon focus:ring-1 focus:ring-neon outline-none transition-all"
                     type="number"
                     min="0.01"
                     step="0.01"
@@ -132,19 +172,20 @@
                 </div>
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label" for="select-pagador"
-                >¿Quién pagó?</label
-              >
-              <select id="select-pagador" class="form-select">
+            
+            <div class="space-y-2">
+              <label class="block text-xs font-bold uppercase tracking-widest text-neutral" for="select-pagador">¿Quién pagó?</label>
+              <select id="select-pagador" class="w-full bg-panel border border-border rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:ring-1 focus:ring-neon outline-none transition-all appearance-none">
                 <option value="">Seleccionar pagador</option>
               </select>
             </div>
-            <div class="form-group">
-              <label class="form-label">¿Entre quiénes se divide?</label>
-              <div id="checkboxes-divide" class="checkboxes-grid"></div>
+
+            <div class="space-y-3">
+              <label class="block text-xs font-bold uppercase tracking-widest text-neutral">¿Entre quiénes se divide?</label>
+              <div id="checkboxes-divide" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>
             </div>
-            <button type="submit" class="btn btn--primary btn--full">
+
+            <button type="submit" class="btn-primary w-full py-3 text-base">
               ✓ Registrar Gasto
             </button>
           </form>
@@ -152,19 +193,21 @@
       </section>
     </main>
 
-    <footer class="footer">
-      <div class="container footer__inner">
+    <!-- ══ FOOTER ══ -->
+    <footer class="border-t border-border mt-20 py-8 bg-panel">
+      <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div class="footer__brand">💸 Agenda de Gastos</div>
-          <div class="footer__copy">© 2024 Agenda de Gastos Compartidos</div>
+          <p class="text-sm font-bold text-white">💸 Agenda de Gastos</p>
+          <p class="text-xs font-mono mt-1 footer-copy">© 2026 Agenda de Gastos Compartidos</p>
         </div>
-        <nav class="footer__links">
-          <a href="#">Privacidad</a>
-          <a href="#">Términos</a>
-          <a href="#">Soporte</a>
+        <nav class="flex gap-6">
+          <a href="#" class="footer-link">Privacidad</a>
+          <a href="#" class="footer-link">Términos</a>
+          <a href="#" class="footer-link">Soporte</a>
         </nav>
       </div>
     </footer>
+
     <script type="module" src="js/ui-index.js"></script>
   </body>
 </html>

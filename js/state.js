@@ -41,6 +41,10 @@ export function setGrupoActivo(idx) {
   }
 }
 
+export function desactivarGrupo() {
+  state.grupoActivo = null;
+}
+
 export function agregarPersona(nombre) {
   const g = getGrupoActivo();
   if (!g) return { ok: false, msg: 'No hay grupo activo.' };

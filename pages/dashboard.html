@@ -4,104 +4,195 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Agenda de Gastos — Dashboard</title>
+
+    <!-- Fuentes -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../assets/css/pages/styles.config.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración de Tailwind (inline, reemplaza styles.config.js) -->
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Space Grotesk"', 'sans-serif'],
+              mono: ['"Space Mono"', 'monospace'],
+            },
+            colors: {
+              neon:     '#00ffc8',
+              panel:    '#0d1117',
+              card:     '#161b22',
+              border:   '#21262d',
+              positive: '#00e676',
+              negative: '#ff5252',
+              neutral:  '#90a4ae',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Estilos propios -->
     <link rel="stylesheet" href="../assets/css/components/header.css" />
     <link rel="stylesheet" href="../assets/css/pages/dashboard.css" />
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
-  <body>
-    <header class="header">
-      <div class="container header__inner">
-        <div class="header__brand">
-          <span class="header__title">💸 Agenda de Gastos</span>
-          <span class="header__group-name" id="nombre-grupo-header"
-            >Cargando...</span
-          >
+
+  <body class="font-sans bg-panel text-white min-h-screen">
+
+    <!-- ══ HEADER ══ -->
+    <header class="bg-card border-b border-border sticky top-0 z-50 header-shadow">
+      <div class="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between gap-4">
+
+        <div class="flex items-center gap-3">
+          <div class="header-logo-icon">💸</div>
+          <div>
+            <div class="text-base font-bold tracking-tight leading-tight text-white">Agenda de Gastos</div>
+            <div id="nombre-grupo-header" class="text-xs font-mono font-bold uppercase tracking-widest text-neon">Cargando...</div>
+          </div>
         </div>
-        <nav class="header__nav">
-          <a href="../index.html" class="header__nav-link">Ingresar</a>
-          <a href="dashboard.html" class="header__nav-link active">Dashboard</a>
+
+        <nav class="hidden sm:flex items-center gap-1">
+          <a href="../index.html" class="nav-link">Ingresar</a>
+          <a href="dashboard.html" class="nav-link nav-link--active">Dashboard</a>
         </nav>
-        <button id="btn-nuevo-grupo" class="btn-nuevo-grupo">
-          + Nuevo Grupo
-        </button>
+
+        <button id="btn-nuevo-grupo" class="btn-primary">+ Nuevo Grupo</button>
       </div>
     </header>
 
-    <main class="container dashboard-main">
-      <section class="section-gap">
+
+    <!-- ══ MAIN ══ -->
+    <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-12">
+
+      <!-- 01 · Grupos -->
+      <section class="slide-up">
         <div class="section-header">
-          <div class="section-header__left">
-            <span class="section-header__icon">📁</span>
-            <h2 class="section-header__title">Grupos</h2>
-          </div>
+          <span class="section-index">01 /</span>
+          <h2 class="section-title">Grupos</h2>
         </div>
-        <div
-          id="grupos-container"
-          style="display: flex; flex-wrap: wrap; gap: 12px"
-        ></div>
+        <div class="section-divider"></div>
+        <div id="grupos-container" class="flex flex-wrap gap-3"></div>
       </section>
 
-      <section class="section-gap">
+
+      <!-- 02 · Distribución de Gastos -->
+      <section class="slide-up delay-1">
         <div class="section-header">
-          <div class="section-header__left">
-            <span class="section-header__icon">📊</span>
-            <h2 class="section-header__title">Balances</h2>
-          </div>
-          <span class="section-header__badge">Actualizado automáticamente</span>
+          <span class="section-index">02 /</span>
+          <h2 class="section-title">Distribución de Gastos</h2>
         </div>
-        <div class="balances-card" id="balances-container"></div>
+        <div class="section-divider"></div>
+        <div class="bracket-card p-6">
+          <div id="chart-empty" class="empty-state" style="display:none;">
+            <div class="empty-state__icon">📊</div>
+            <p class="empty-state__text">Sin datos para graficar.</p>
+          </div>
+          <div id="chart-wrap" class="flex flex-col md:flex-row items-center gap-8" style="display:none;">
+            <div class="donut-wrapper">
+              <canvas id="donut-chart" width="200" height="200"></canvas>
+              <div id="donut-center" class="donut-center">
+                <span class="donut-center__label">Total</span>
+                <span id="donut-total" class="donut-center__value">S/ 0</span>
+              </div>
+            </div>
+            <div id="chart-legend" class="flex flex-col gap-2 w-full"></div>
+          </div>
+        </div>
       </section>
 
-      <section class="section-gap">
-        <div class="section-header">
-          <div class="section-header__left">
-            <span class="section-header__icon">🔄</span>
-            <h2 class="section-header__title">Transferencias Sugeridas</h2>
-          </div>
-        </div>
-        <div class="transfers-card" id="transferencias-container"></div>
-      </section>
 
-      <section class="section-gap">
-        <div class="section-header">
-          <div class="section-header__left">
-            <span class="section-header__icon">📋</span>
-            <h2 class="section-header__title">Gastos</h2>
+      <!-- 03 + 04 · Balances & Transferencias -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 slide-up delay-2">
+
+        <section>
+          <div class="section-header section-header--between">
+            <div class="flex items-center gap-3">
+              <span class="section-index">03 /</span>
+              <h2 class="section-title">Balances</h2>
+            </div>
+            <span class="badge-live">● live</span>
           </div>
-          <a href="../index.html#form-gasto" class="gastos-header-action">
-            <span class="material-symbols-outlined" style="font-size: 18px"
-              >add</span
-            >
-            Agregar Gasto
-          </a>
+          <div class="section-divider"></div>
+          <div id="balances-container" class="bracket-card px-5 py-1"></div>
+        </section>
+
+        <section>
+          <div class="section-header">
+            <span class="section-index">04 /</span>
+            <h2 class="section-title">Transferencias</h2>
+          </div>
+          <div class="section-divider"></div>
+          <div id="transferencias-container" class="bracket-card p-4"></div>
+        </section>
+      </div>
+
+
+      <!-- 05 · Gastos -->
+      <section class="slide-up delay-3">
+        <div class="section-header section-header--between">
+          <div class="flex items-center gap-3">
+            <span class="section-index">05 /</span>
+            <h2 class="section-title">Gastos</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="btn-export-pdf" class="btn-export btn-export--pdf" title="Descargar PDF">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 21H17a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6M9 17h4"/>
+              </svg>
+              PDF
+            </button>
+            <button id="btn-export-excel" class="btn-export btn-export--excel" title="Descargar Excel">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M3 14h18M10 3v18M14 3v18M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"/>
+              </svg>
+              Excel
+            </button>
+            <a href="../index.html#form-gasto" class="btn-export btn-export--add">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path d="M12 5v14M5 12h14"/>
+              </svg>
+              Agregar
+            </a>
+          </div>
         </div>
+        <div class="section-divider"></div>
         <div id="gastos-container"></div>
       </section>
+
     </main>
 
-    <footer class="footer">
-      <div class="container footer__inner">
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="border-t border-border mt-20 py-8 bg-panel">
+      <div class="max-w-5xl mx-auto px-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <div class="footer__brand">💸 Agenda de Gastos</div>
-          <div class="footer__copy">© 2026 Agenda de Gastos Compartidos</div>
+          <p class="text-sm font-bold text-white">💸 Agenda de Gastos</p>
+          <p class="text-xs font-mono mt-1 footer-copy">© 2026 Agenda de Gastos Compartidos</p>
         </div>
-        <nav class="footer__links">
-          <a href="#">Privacidad</a>
-          <a href="#">Términos</a>
-          <a href="#">Soporte</a>
+        <nav class="flex gap-6">
+          <a href="#" class="footer-link">Privacidad</a>
+          <a href="#" class="footer-link">Términos</a>
+          <a href="#" class="footer-link">Soporte</a>
         </nav>
       </div>
     </footer>
+
+
+    <!-- Librerías externas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.2/dist/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <!-- JS propio -->
     <script type="module" src="../js/ui-dashboard.js"></script>
   </body>
 </html>
