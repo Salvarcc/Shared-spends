@@ -17,16 +17,35 @@ function avatarClass(idx) { return `avatar--${AVATAR_COLORS[idx % AVATAR_COLORS.
 
 function getEmoji(desc) {
   const d = desc.toLowerCase();
-  if (d.includes('cena')     || d.includes('comida'))   return '🍽️';
-  if (d.includes('taxi')     || d.includes('uber'))     return '🚕';
-  if (d.includes('hotel')    || d.includes('hostal'))   return '🏨';
-  if (d.includes('super')    || d.includes('mercado'))  return '🛒';
-  if (d.includes('gasolina') || d.includes('gas'))      return '⛽';
-  if (d.includes('cine')     || d.includes('pelicula')) return '🎬';
-  if (d.includes('cerve')    || d.includes('bar'))      return '🍺';
-  if (d.includes('avion')    || d.includes('vuelo'))    return '✈️';
-  if (d.includes('playa')    || d.includes('viaje'))    return '🏖️';
-  if (d.includes('almuerzo'))                           return '🥗';
+  // Comida
+  if (d.includes('cena')     || d.includes('comida')    || d.includes('desayuno') || d.includes('almuerzo')) return '🍽️';
+  if (d.includes('cafe')     || d.includes('starbucks') || d.includes('cafeteria')) return '☕';
+  
+  // Transporte y Viajes
+  if (d.includes('taxi')     || d.includes('uber')      || d.includes('cabify'))   return '🚕';
+  if (d.includes('avion')    || d.includes('vuelo')     || d.includes('aeropuerto')) return '✈️';
+  if (d.includes('bus')      || d.includes('pasaje')    || d.includes('tren'))     return '🚌';
+  if (d.includes('gasolina') || d.includes('gas')       || d.includes('grifo'))    return '⛽';
+  if (d.includes('hotel')    || d.includes('hostal')    || d.includes('airbnb'))   return '🏨';
+  if (d.includes('playa')    || d.includes('viaje')     || d.includes('turismo'))  return '🏖️';
+
+  // Compras y Hogar
+  if (d.includes('super')    || d.includes('mercado')   || d.includes('bodega'))   return '🛒';
+  if (d.includes('ropa')     || d.includes('zapatos')   || d.includes('mall'))     return '👕';
+  if (d.includes('casa')     || d.includes('hogar')     || d.includes('mueble'))   return '🏠';
+  if (d.includes('celular')  || d.includes('laptop')    || d.includes('tech'))     return '💻';
+
+  // Ocio y Bebidas
+  if (d.includes('cerve')    || d.includes('bar')       || d.includes('trago'))    return '🍺';
+  if (d.includes('cine')     || d.includes('pelicula')  || d.includes('netflix'))  return '🎬';
+  if (d.includes('fiesta')   || d.includes('evento')    || d.includes('concierto')) return '🎉';
+  if (d.includes('gym')      || d.includes('deporte')   || d.includes('futbol'))   return '⚽';
+
+  // Otros
+  if (d.includes('farmacia') || d.includes('medicina')  || d.includes('doctor'))   return '💊';
+  if (d.includes('regalo')   || d.includes('detalle')   || d.includes('cumple'))   return '🎁';
+  if (d.includes('mascota')  || d.includes('perro')     || d.includes('gato'))     return '🐾';
+
   return '💳';
 }
 
